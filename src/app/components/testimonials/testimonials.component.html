@@ -1,0 +1,57 @@
+<section id="depoimentos" class="section testimonials">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// depoimentos</span>
+      <h2>O que dizem</h2>
+      <p>Feedback de clientes e colaboradores sobre projetos entregues.</p>
+    </div>
+
+    <div class="slider-wrapper">
+      <div class="slider">
+        @for (t of testimonials; track t.name; let i = $index) {
+          <div class="testimonial-card glass-card" [class.active]="current() === i"
+               [class.prev]="(current() - 1 + testimonials.length) % testimonials.length === i"
+               [class.next]="(current() + 1) % testimonials.length === i">
+
+            <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+
+            <p class="testimonial-text">{{ t.text }}</p>
+
+            <div class="testimonial-author">
+              <div class="author-left">
+                <div class="author-avatar" [class]="'avatar-' + t.color">
+                  {{ t.avatar }}
+                </div>
+                <div class="author-info">
+                  <strong>{{ t.name }}</strong>
+                  <span>{{ t.role }} — {{ t.company }}</span>
+                </div>
+              </div>
+              
+              <button class="validate-btn" (click)="goToValidationLink(t.name, t.validationLink)">
+                <i class="fas fa-check-circle"></i>
+                Validar
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="slider-controls">
+        <button class="ctrl-btn" (click)="prev()">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <div class="dots">
+          @for (t of testimonials; track t.name; let i = $index) {
+            <button class="dot" [class.active]="current() === i" (click)="goTo(i)"></button>
+          }
+        </div>
+
+        <button class="ctrl-btn" (click)="next()">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

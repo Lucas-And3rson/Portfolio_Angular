@@ -1,0 +1,36 @@
+<nav class="navbar" [class.scrolled]="isScrolled()">
+  <div class="container nav-inner">
+    <a class="logo" (click)="scrollTo('#inicio')">
+      <span class="logo-bracket">&lt;</span>
+      <span class="logo-name">LA</span>
+      <span class="logo-accent">MedLink</span>
+      <span class="logo-bracket">/&gt;</span>
+    </a>
+
+    <ul class="nav-links" [class.open]="isMobileOpen()">
+      @for (link of navLinks; track link.label) {
+        <li>
+          <a (click)="scrollTo(link.href)">{{ link.label }}</a>
+        </li>
+      }
+      <li class="nav-cta">
+        <a class="btn-primary whatsapp-btn" 
+           [href]="whatsappLink" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           style="color:azure">
+          <i class="fas fa-file"></i> CV
+        </a>
+      </li>
+    </ul>
+
+    <button class="hamburger" (click)="toggleMobile()" [class.active]="isMobileOpen()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile overlay -->
+@if (isMobileOpen()) {
+  <div class="mobile-overlay" (click)="closeMobile()"></div>
+}

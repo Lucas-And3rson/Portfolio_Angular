@@ -1,0 +1,190 @@
+<section id="projetos" class="projects">
+  <div class="container">
+    <!-- Section Header -->
+    <div class="section-header">
+      <span class="section-tag">Projetos</span>
+      <h2>Minha Vitrine de Trabalho</h2>
+      <p>Sistemas reais entregues com foco em performance, escalabilidade e experiência do usuário.</p>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="projects-grid">
+      @for (project of projects; track project.title; let i = $index) {
+        <div class="project-card">
+          <!-- Media Preview Section -->
+          <div class="project-media">
+            @if (project.mediaItems && project.mediaItems.length > 0) {
+              @if (project.mediaItems[0]?.type === 'video') {
+                <iframe 
+                  class="project-video"
+                  [src]="getSafeMediaSrc(project.mediaItems[0].src)"
+                  title="{{ project.title }}"
+                  frameborder="0"
+                  allow="autoplay; muted"
+                  allowfullscreen>
+                </iframe>
+              } @else if (project.mediaItems[0].type === 'image') {
+                <img 
+                  class="project-image"
+                  [src]="project.mediaItems[0].src"
+                  [alt]="project.title"
+                  loading="lazy">
+              }
+            } @else {
+              <div class="project-placeholder">
+                <i [class]="project.icon"></i>
+                <span>Preview indisponível</span>
+              </div>
+            }
+            
+            <!-- Status Badge -->
+            <div class="status-badge" [class]="'badge-' + project.badgeColor">
+              {{ project.badge }}
+            </div>
+
+            <!-- Action Buttons Overlay -->
+            <div class="media-overlay">
+              <button class="btn-action btn-preview" (click)="openModal(project)">
+                <i class="fas fa-eye"></i>
+                <span>Ver Detalhes</span>
+              </button>
+              @if (project.liveLink) {
+                <a 
+                  [href]="project.liveLink"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-action btn-live">
+                  <i class="fas fa-external-link-alt"></i>
+                  <span>Acessar Projeto</span>
+                </a>
+              }
+              @if (project.github) {
+                <a 
+                  [href]="project.github"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-action btn-github">
+                  <i class="fab fa-github"></i>
+                  <span>Repositório</span>
+                </a>
+              }
+            </div>
+          </div>
+
+          <!-- Project Info Section (Summary) -->
+          <div class="project-info-summary">
+            <h3 class="project-title">{{ project.title }}</h3>
+            <p class="project-subtitle">{{ project.subtitle }}</p>
+            <div class="tech-tags-summary">
+              @for (tag of project.tags; track tag) {
+                <span class="tech-tag">{{ tag }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Project Detail Modal -->
+  @if (showModal() && selectedProject()) {
+    <div class="project-modal-backdrop" (click)="closeModal()"></div>
+    <div class="project-modal">
+      <button class="modal-close-btn" (click)="closeModal()">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <div class="modal-content">
+        <!-- Media Carousel -->
+        <div class="modal-media-carousel">
+          @if (selectedProject()?.mediaItems && selectedProject()!.mediaItems!.length > 0) {
+            @for (media of selectedProject()?.mediaItems; track media.src; let idx = $index) {
+              <div class="carousel-item" [class.active]="currentSlide() === idx">
+                @if (media.type === 'video') {
+                  <iframe 
+                    class="carousel-video"
+                    [src]="getSafeMediaSrc(media.src)"
+                    title="{{ selectedProject()!.title }}"
+                    frameborder="0"
+                    allow="autoplay; muted"
+                    allowfullscreen>
+                  </iframe>
+                } @else if (media.type === 'image') {
+                  <img 
+                    class="carousel-image"
+                    [src]="media.src"
+                    [alt]="selectedProject()!.title"
+                    loading="lazy">
+                }
+              </div>
+            }
+
+            @if (selectedProject()!.mediaItems!.length > 1) {
+              <button class="carousel-nav prev" (click)="prevSlide()"><i class="fas fa-chevron-left"></i></button>
+              <button class="carousel-nav next" (click)="nextSlide()"><i class="fas fa-chevron-right"></i></button>
+              <div class="carousel-dots">
+                @for (media of selectedProject()?.mediaItems; track media.src; let idx = $index) {
+                  <span class="dot" [class.active]="currentSlide() === idx" (click)="currentSlide.set(idx)"></span>
+                }
+              </div>
+            }
+          } @else {
+            <div class="project-placeholder">
+              <i [class]="selectedProject()?.icon"></i>
+              <span>Preview indisponível</span>
+            </div>
+          }
+        </div>
+
+        <!-- Project Details in Modal -->
+        <div class="modal-details">
+          <h3 class="modal-title">{{ selectedProject()?.title }}</h3>
+          <p class="modal-subtitle">{{ selectedProject()?.subtitle }}</p>
+          <p class="modal-description">{{ selectedProject()?.description }}</p>
+
+          <div class="features-section">
+            <h4 class="features-title">Destaques</h4>
+            <ul class="features-list">
+              @for (feature of selectedProject()?.features; track feature) {
+                <li class="feature-item">
+                  <i class="fas fa-check-circle"></i>
+                  <span>{{ feature }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+
+          <div class="tech-tags-section">
+            <h4 class="tags-title">Tecnologias</h4>
+            <div class="tech-tags">
+              @for (tag of selectedProject()?.tags; track tag) {
+                <span class="tech-tag">{{ tag }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="project-actions">
+            @if (selectedProject()?.liveLink) {
+              <a 
+                [href]="selectedProject()?.liveLink"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-primary">
+                <i class="fas fa-external-link-alt"></i> Acessar Projeto
+              </a>
+            }
+            @if (selectedProject()?.github) {
+              <a 
+                [href]="selectedProject()?.github"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-outline">
+                <i class="fab fa-github"></i> Repositório
+              </a>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</section>

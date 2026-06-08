@@ -1,0 +1,9 @@
+// Importar neste arquivo as customizações globais de tema
+// (complementa as CSS vars definidas no :host do componente)
+
+// Remove spin buttons de number inputs globalmente
+input[type='number'] {
+  -moz-appearance: textfield;
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+}

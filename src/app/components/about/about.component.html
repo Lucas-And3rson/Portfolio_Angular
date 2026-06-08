@@ -1,0 +1,77 @@
+<section id="sobre" class="section about">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// sobre mim</span>
+      <h2>Quem sou eu</h2>
+      <p>Desenvolvedor Full Stack com foco em sistemas reais, arquitetura sólida e entrega com responsabilidade.</p>
+    </div>
+
+    <div class="about-grid">
+      <!-- Left: text -->
+      <div class="about-text">
+        <p>
+          Sou desenvolvedor <strong>Full Stack</strong> atuando profissionalmente como PJ desde 2025.
+          Minha trajetória passou pela formação técnica integrada em Informática no <strong>IFPE</strong>
+          e hoje prossigo com a graduação em <strong>Análise e Desenvolvimento de Sistemas</strong> na UniCesumar.
+        </p>
+        <p>
+          Tenho experiência real no desenvolvimento de aplicações web de alta complexidade —
+          incluindo um <strong>sistema hospitalar completo</strong> com múltiplos módulos clínicos,
+          dashboards em tempo real, integração com IA e autenticação 2FA.
+        </p>
+        <p>
+          Minha stack principal é <strong>Laravel (PHP) + Angular</strong>, com domínio em
+          APIs RESTful, MySQL, SSE, Chart.js e integração com APIs de Inteligência Artificial (Groq).
+          Entrego produtos do zero: da arquitetura ao deploy em produção.
+        </p>
+
+        <div class="about-highlights">
+          <div class="highlight">
+            <i class="fas fa-check-circle"></i>
+            <span>Projetos reais entregues em produção</span>
+          </div>
+          <div class="highlight">
+            <i class="fas fa-check-circle"></i>
+            <span>Autonomia completa da arquitetura ao deploy</span>
+          </div>
+          <div class="highlight">
+            <i class="fas fa-check-circle"></i>
+            <span>Integração com Inteligência Artificial (Groq API)</span>
+          </div>
+          <div class="highlight">
+            <i class="fas fa-check-circle"></i>
+            <span>Atuação como PJ com CNPJ próprio</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: timeline -->
+      <div class="about-timeline">
+        @for (item of timeline; track item.year + item.title) {
+          <div class="timeline-item" [class]="'color-' + item.color">
+            <div class="tl-icon">
+              <i [class]="item.icon"></i>
+            </div>
+            <div class="tl-content">
+              <span class="tl-year">{{ item.year }}</span>
+              <h4>{{ item.title }}</h4>
+              <p>{{ item.desc }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      @for (stat of animatedStats; track stat.label) {
+        <div class="stat-card glass-card">
+          <div class="stat-value">
+            {{ stat.current }}<span class="stat-suffix">{{ stat.suffix }}</span>
+          </div>
+          <div class="stat-label">{{ stat.label }}</div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

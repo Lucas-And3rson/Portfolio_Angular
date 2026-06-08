@@ -1,0 +1,23 @@
+# Node.js dependencies
+/node_modules/
+
+# Build output
+/dist/
+/tmp/
+/out-tsc/
+
+# Angular cache
+/.angular/cache
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ambiente
+.env

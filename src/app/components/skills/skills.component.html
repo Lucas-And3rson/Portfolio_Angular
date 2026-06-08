@@ -1,0 +1,37 @@
+<section id="habilidades" class="section skills">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// habilidades</span>
+      <h2>Stack Técnico</h2>
+      <p>Tecnologias que utilizo no desenvolvimento de sistemas.</p>
+    </div>
+
+    <div class="skills-grid">
+      @for (cat of categories; track cat.title) {
+        <div class="skill-category glass-card" [class]="'border-' + cat.color">
+          <div class="cat-header">
+            <div class="cat-icon" [class]="'icon-' + cat.color">
+              <i [class]="cat.icon"></i>
+            </div>
+            <h3>{{ cat.title }}</h3>
+          </div>
+
+          <div class="skill-list">
+            @for (skill of cat.skills; track skill.name) {
+              <div class="skill-item">
+                <div class="skill-info">
+                  <i [class]="skill.icon"></i>
+                  <span>{{ skill.name }}</span>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-fill" [class]="'fill-' + cat.color"
+                       [style.width.%]="skill.level"></div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

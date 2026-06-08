@@ -1,0 +1,316 @@
+<!-- ── BARRA DE FERRAMENTAS (oculta na impressão) ─────────────────────── -->
+<div class="toolbar no-print">
+  <div class="toolbar-logo">
+    <div class="logo-box">BB</div>
+    <div>
+      <div class="toolbar-title">Simulador SAC vs PRICE</div>
+      <div class="toolbar-sub">
+        <span *ngIf="form.cliente">{{ form.cliente }}</span>
+        <span *ngIf="form.cliente && form.bemFinanciado"> — </span>
+        <span *ngIf="form.bemFinanciado">{{ form.bemFinanciado }}</span>
+        <span *ngIf="!form.cliente && !form.bemFinanciado">Sistema de Apoio à Decisão Gerencial PJ</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar-actions">
+    <!-- Tema -->
+    <div class="tema-grupo">
+      <button
+        *ngFor="let t of themeSvc.temas"
+        class="btn-tema"
+        [class.ativo]="themeSvc.temaAtual() === t.valor"
+        (click)="trocarTema(t.valor)"
+        [title]="t.rotulo">
+        {{ t.icone }}
+      </button>
+    </div>
+
+    <div class="separador"></div>
+
+    <!-- Exportar -->
+    <button class="btn-acao btn-excel" (click)="exportarExcel()" [disabled]="!resultado" title="Exportar Excel">
+      📊 Excel
+    </button>
+    <button class="btn-acao btn-pdf" (click)="exportarPDF()" [disabled]="!resultado" title="Exportar PDF">
+      📄 PDF
+    </button>
+    <button class="btn-acao btn-print" (click)="imprimir()" [disabled]="!resultado" title="Imprimir">
+      🖨️ Imprimir
+    </button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ── INPUTS ─────────────────────────────────────────────────────────── -->
+  <div class="sec-hdr mb no-print"><span class="sec-ttl">Dados da Operação</span><div class="sec-line"></div></div>
+  <div class="card mb no-print">
+    <div class="card-hdr"><div class="card-ico">✏</div><span class="card-ttl">Parâmetros do Financiamento</span></div>
+    <div class="card-body">
+      <div class="inp-grid">
+        <div class="inp-grp">
+          <label>Nome do Cliente</label>
+          <input class="inp-fld" type="text" [(ngModel)]="form.cliente"
+                 placeholder="Ex: Empresa XYZ Ltda" (ngModelChange)="recalcular()">
+        </div>
+        <div class="inp-grp">
+          <label>Bem Financiado</label>
+          <input class="inp-fld" type="text" [(ngModel)]="form.bemFinanciado"
+                 placeholder="Ex: Veículo, Imóvel, Máquina" (ngModelChange)="recalcular()">
+        </div>
+        <div class="inp-grp">
+          <label>Capital Financiado (R$)</label>
+          <input class="inp-fld" type="text" [value]="form.capitalDisplay"
+                 (input)="onCurrencyInput($event, 'capitalFinanciado')" placeholder="R$ 0,00">
+        </div>
+        <div class="inp-grp">
+          <label>Valor de Entrada (R$)</label>
+          <input class="inp-fld" type="text" [value]="form.entradaDisplay"
+                 (input)="onCurrencyInput($event, 'valorEntrada')" placeholder="R$ 0,00">
+        </div>
+        <div class="inp-grp">
+          <label>Taxa de Juros Mensal (%)</label>
+          <input class="inp-fld" type="number" [(ngModel)]="form.taxaJurosMensal"
+                 step="0.01" min="0.01" (ngModelChange)="recalcular()">
+        </div>
+        <div class="inp-grp">
+          <label>Prazo (meses)</label>
+          <input class="inp-fld" type="number" [(ngModel)]="form.prazoMeses"
+                 step="1" min="1" max="480" (ngModelChange)="recalcular()">
+        </div>
+        <div class="inp-grp">
+          <label>IOF (% sobre capital)</label>
+          <input class="inp-fld" type="number" [(ngModel)]="form.iof"
+                 step="0.01" min="0" (ngModelChange)="recalcular()">
+        </div>
+        <div class="inp-grp">
+          <label>Seguro Mensal (%)</label>
+          <input class="inp-fld" type="number" [(ngModel)]="form.taxaSeguroMensal"
+                 step="0.001" min="0" (ngModelChange)="recalcular()">
+        </div>
+        <div class="inp-grp">
+          <label>Outras Taxas Mensais (%)</label>
+          <input class="inp-fld" type="number" [(ngModel)]="form.outrasTaxasMensais"
+                 step="0.001" min="0" (ngModelChange)="recalcular()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── KPIs ───────────────────────────────────────────────────────────── -->
+  <ng-container *ngIf="resultado">
+    <div class="sec-hdr mb"><span class="sec-ttl">Indicadores Executivos</span><div class="sec-line"></div></div>
+    <div class="kpi-grid mb">
+
+      <div class="kpi kpi-blue">
+        <div class="kpi-lbl">Total Pago · SAC</div>
+        <div class="kpi-val">{{ resultado.totalSAC | brl }}</div>
+        <div class="kpi-note">Juros: {{ resultado.jurosTotalSAC | brl }}</div>
+        <span class="badge bg-blue">SAC</span>
+      </div>
+
+      <div class="kpi kpi-yellow">
+        <div class="kpi-lbl">Total Pago · PRICE</div>
+        <div class="kpi-val">{{ resultado.totalPRICE | brl }}</div>
+        <div class="kpi-note">Juros: {{ resultado.jurosTotalPRICE | brl }}</div>
+        <span class="badge bg-yellow">PRICE</span>
+      </div>
+
+      <div class="kpi" [class.kpi-green]="resultado.economia >= 0" [class.kpi-red]="resultado.economia < 0">
+        <div class="kpi-lbl">Economia</div>
+        <div class="kpi-val" [class.val-green]="resultado.economia >= 0" [class.val-red]="resultado.economia < 0">
+          {{ (resultado.economia < 0 ? -resultado.economia : resultado.economia) | brl }}
+        </div>
+        <div class="kpi-note">{{ resultado.melhorSistema }} é mais econômico</div>
+        <span class="badge" [class.bg-green]="resultado.economia >= 0" [class.bg-red]="resultado.economia < 0">
+          {{ resultado.percentualDiferenca | number:'1.2-2' }}%
+        </span>
+      </div>
+
+      <div class="kpi kpi-blue">
+        <div class="kpi-lbl">1ª Parcela · SAC</div>
+        <div class="kpi-val">{{ primeiraParcelaSAC | brl }}</div>
+        <div class="kpi-note">Com todos os encargos</div>
+      </div>
+
+      <div class="kpi kpi-blue">
+        <div class="kpi-lbl">Última Parcela · SAC</div>
+        <div class="kpi-val">{{ ultimaParcelaSAC | brl }}</div>
+        <div class="kpi-note">Redução de {{ reducaoSAC | number:'1.1-1' }}%</div>
+      </div>
+
+      <div class="kpi kpi-yellow">
+        <div class="kpi-lbl">Parcela Fixa · PRICE</div>
+        <div class="kpi-val">{{ primeiraParcelaPRICE | brl }}</div>
+        <div class="kpi-note">Constante por {{ form.prazoMeses }} meses</div>
+      </div>
+
+      <div class="kpi kpi-blue">
+        <div class="kpi-lbl">IOF Total</div>
+        <div class="kpi-val">{{ resultado.iofTotal | brl }}</div>
+        <div class="kpi-note">{{ form.iof | number:'1.2-2' }}% sobre capital</div>
+      </div>
+
+      <div class="kpi kpi-blue">
+        <div class="kpi-lbl">Seguros Acumulados · SAC</div>
+        <div class="kpi-val">{{ resultado.seguroTotalSAC | brl }}</div>
+        <div class="kpi-note">No período total</div>
+      </div>
+
+      <div class="kpi" [class.kpi-green]="resultado.economia >= 0" [class.kpi-red]="resultado.economia < 0">
+        <div class="kpi-lbl">Diferença Percentual</div>
+        <div class="kpi-val">{{ resultado.percentualDiferenca | number:'1.2-2' }}%</div>
+        <div class="kpi-note">Entre SAC e PRICE</div>
+        <span class="badge" [class.bg-green]="resultado.economia >= 0" [class.bg-red]="resultado.economia < 0">
+          {{ resultado.melhorSistema }} vantajoso
+        </span>
+      </div>
+
+    </div>
+
+    <!-- Banner Vantagem -->
+    <div class="adv mb"
+         [class.adv-sac]="resultado.melhorSistema === 'SAC'"
+         [class.adv-price]="resultado.melhorSistema === 'PRICE'">
+      <span class="adv-ico">🏆</span>
+      <div>
+        <div class="adv-ttl">
+          {{ resultado.melhorSistema }} é a melhor opção<span *ngIf="form.cliente"> para {{ form.cliente }}</span>
+        </div>
+        <div class="adv-sub">
+          Economia de
+          {{ (resultado.economia < 0 ? -resultado.economia : resultado.economia) | brl }}
+          ({{ resultado.percentualDiferenca | number:'1.2-2' }}%) frente ao
+          {{ resultado.melhorSistema === 'SAC' ? 'PRICE' : 'SAC' }} em {{ form.prazoMeses }} meses
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ── GRÁFICOS (sempre no DOM para o ViewChild funcionar) ───────────── -->
+  <div [hidden]="!resultado">
+    <div class="sec-hdr mb no-print"><span class="sec-ttl">Análise Gráfica</span><div class="sec-line"></div></div>
+
+    <div class="chart-card chart-full mb no-print">
+      <div class="chart-ttl">Comparativo de Prestações — SAC vs PRICE (mês a mês)</div>
+      <div class="chart-wrap-lg"><canvas #lineCanvas></canvas></div>
+    </div>
+
+    <div class="charts-row mb no-print">
+      <div class="chart-card">
+        <div class="chart-ttl">Composição da Parcela SAC — Área Empilhada</div>
+        <div class="chart-wrap-md"><canvas #areaCanvas></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-ttl">Comparativo de Montante Total</div>
+        <div class="chart-wrap-md"><canvas #barCanvas></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TABELAS ─────────────────────────────────────────────────────────── -->
+  <ng-container *ngIf="resultado">
+    <div class="sec-hdr mb"><span class="sec-ttl">Tabelas de Amortização</span><div class="sec-line"></div></div>
+    <div class="card mb">
+      <div class="card-body">
+
+        <!-- Tabs (ocultadas na impressão, ambas as tabelas aparecem) -->
+        <div class="tabs no-print">
+          <button class="tab-btn" [class.on]="abaAtiva === 'sac'"   (click)="abaAtiva = 'sac'">Sistema SAC</button>
+          <button class="tab-btn" [class.on]="abaAtiva === 'price'" (click)="abaAtiva = 'price'">Sistema PRICE</button>
+        </div>
+
+        <!-- SAC -->
+        <div [class.no-print]="abaAtiva !== 'sac'" [hidden]="abaAtiva !== 'sac'">
+          <div class="tbl-titulo print-only">Tabela SAC</div>
+          <input class="tbl-filter no-print" type="text" [(ngModel)]="filtroSAC"
+                 placeholder="Filtrar por período..." (ngModelChange)="filtrarTabela('sac', $event)">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr><th>Per.</th><th>Prestação</th><th>Juros</th><th>Amortização</th>
+                    <th>Seguro</th><th>Outras Taxas</th><th>Total c/ Enc.</th><th>Saldo Devedor</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let r of sacFiltrado; trackBy: trackPeriodo">
+                  <td class="tc tb-blue">{{ r.periodo }}</td>
+                  <td>{{ r.prestacao      | brl }}</td>
+                  <td>{{ r.juros          | brl }}</td>
+                  <td>{{ r.amortizacao    | brl }}</td>
+                  <td>{{ r.seguro         | brl }}</td>
+                  <td>{{ r.outrasTaxas    | brl }}</td>
+                  <td class="tb">{{ r.prestacaoTotal | brl }}</td>
+                  <td>{{ r.saldoDevedor   | brl }}</td>
+                </tr>
+              </tbody>
+              <tfoot *ngIf="totaisSAC; let t">
+                <tr>
+                  <td class="tc">TOTAL</td>
+                  <td>{{ t.prestacao      | brl }}</td>
+                  <td>{{ t.juros          | brl }}</td>
+                  <td>{{ t.amortizacao    | brl }}</td>
+                  <td>{{ t.seguro         | brl }}</td>
+                  <td>{{ t.outrasTaxas    | brl }}</td>
+                  <td>{{ t.prestacaoTotal | brl }}</td>
+                  <td>—</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- PRICE -->
+        <div [class.no-print]="abaAtiva !== 'price'" [hidden]="abaAtiva !== 'price'">
+          <div class="tbl-titulo print-only">Tabela PRICE</div>
+          <input class="tbl-filter no-print" type="text" [(ngModel)]="filtroPrice"
+                 placeholder="Filtrar por período..." (ngModelChange)="filtrarTabela('price', $event)">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr><th>Per.</th><th>Prestação</th><th>Juros</th><th>Amortização</th>
+                    <th>Seguro</th><th>Outras Taxas</th><th>Total c/ Enc.</th><th>Saldo Devedor</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let r of priceFiltrado; trackBy: trackPeriodo">
+                  <td class="tc tb-blue">{{ r.periodo }}</td>
+                  <td>{{ r.prestacao      | brl }}</td>
+                  <td>{{ r.juros          | brl }}</td>
+                  <td>{{ r.amortizacao    | brl }}</td>
+                  <td>{{ r.seguro         | brl }}</td>
+                  <td>{{ r.outrasTaxas    | brl }}</td>
+                  <td class="tb">{{ r.prestacaoTotal | brl }}</td>
+                  <td>{{ r.saldoDevedor   | brl }}</td>
+                </tr>
+              </tbody>
+              <tfoot *ngIf="totaisPRICE; let t">
+                <tr>
+                  <td class="tc">TOTAL</td>
+                  <td>{{ t.prestacao      | brl }}</td>
+                  <td>{{ t.juros          | brl }}</td>
+                  <td>{{ t.amortizacao    | brl }}</td>
+                  <td>{{ t.seguro         | brl }}</td>
+                  <td>{{ t.outrasTaxas    | brl }}</td>
+                  <td>{{ t.prestacaoTotal | brl }}</td>
+                  <td>—</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Estado vazio -->
+  <div class="estado-vazio no-print" *ngIf="!resultado">
+    <div class="ev-ico">💡</div>
+    <p>Preencha os parâmetros para visualizar a análise comparativa</p>
+  </div>
+
+  <footer class="footer no-print">
+    Simulador Financeiro SAC vs PRICE &bull; Uso Interno &bull;
+    Cálculos estimativos sujeitos à confirmação operacional
+  </footer>
+</div>

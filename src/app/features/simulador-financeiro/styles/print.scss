@@ -1,0 +1,64 @@
+// Importado em styles.scss com: @use 'features/simulador-financeiro/styles/print';
+
+@media print {
+  // Oculta elementos não essenciais
+  .no-print { display: none !important; }
+
+  // Exibe elementos somente na impressão
+  .print-only { display: block !important; }
+
+  // Mostra ambas as tabelas mesmo que uma esteja oculta por aba
+  [hidden] { display: block !important; visibility: visible !important; }
+
+  body, app-simulador, app-root { background: #fff !important; }
+
+  app-simulador {
+    --c-bg:        #fff;
+    --c-surface:   #fff;
+    --c-text:      #000;
+    --c-text-m:    #444;
+    --c-border:    #ccc;
+    --c-blue:      #003F8A;
+    --c-blue-d:    #002D63;
+    --c-row-alt:   #f5f5f5;
+  }
+
+  .wrap { padding: 0; max-width: 100%; }
+
+  // Cabeçalho de impressão
+  .adv {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  // KPI cards na impressão (3 por linha)
+  .kpi-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    page-break-inside: avoid;
+  }
+  .kpi { break-inside: avoid; }
+
+  // Tabelas não quebram no meio de uma linha
+  table { page-break-inside: auto; }
+  tr    { page-break-inside: avoid; page-break-after: auto; }
+
+  // thead repete em cada página
+  thead { display: table-header-group; }
+  tfoot { display: table-footer-group; }
+
+  // Força cores de fundo na impressão
+  thead th, tfoot td {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  tr:nth-child(even) td {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  // Nova página entre tabelas
+  .tbl-titulo { display: block !important; page-break-before: always; padding-top: 16px; }
+
+  // Largura total da tabela
+  .tbl-wrap { max-height: none !important; overflow: visible !important; }
+}

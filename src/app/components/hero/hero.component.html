@@ -1,0 +1,103 @@
+<section id="inicio" class="hero">
+  <!-- Animated background -->
+  <div class="hero-bg">
+    <div class="grid-overlay"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="particles">
+      @for (p of [1,2,3,4,5,6,7,8,9,10,11,12]; track p) {
+        <div class="particle" [style.--i]="p"></div>
+      }
+    </div>
+  </div>
+
+  <div class="container hero-inner">
+    <!-- Left: text content -->
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>Disponível para trabalho</span>
+      </div>
+
+      <h1 class="hero-name">
+        Lucas <span class="gradient-text">Anderson</span>
+      </h1>
+
+      <div class="hero-title">
+        <span class="typing-text">{{ displayText() }}</span>
+        <span class="cursor">|</span>
+      </div>
+
+      <p class="hero-subtitle">
+        Especializado em <strong>Laravel</strong>, <strong>Angular</strong>, sistemas hospitalares,
+        <strong>APIs REST</strong> e integração com <strong>Inteligência Artificial</strong>.
+        Desenvolvedor PJ entregando soluções reais e complexas desde 2023.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn-primary" (click)="scrollToProjects()">
+          <i class="fas fa-code"></i> Ver Projetos
+        </button>
+        <button class="btn-outline" (click)="scrollToContact()">
+          <i class="fas fa-paper-plane"></i> Entrar em Contato
+        </button>
+      </div>
+
+      <div class="hero-socials">
+        <a href="https://github.com/Lucas-And3rson" target="_blank" class="social-link">
+          <i class="fab fa-github"></i>
+          <span>GitHub</span>
+        </a>
+        <a href="https://linkedin.com/in/devlucasanderson" target="_blank" class="social-link">
+          <i class="fab fa-linkedin"></i>
+          <span>LinkedIn</span>
+        </a>
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=devlucasanderson@gmail.com" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="social-link">
+          <i class="fas fa-envelope"></i>
+          <span>Email</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Right: avatar card -->
+    <div class="hero-visual">
+      <div class="avatar-container">
+        <div class="avatar-ring ring-1"></div>
+        <div class="avatar-ring ring-2"></div>
+        <div class="avatar-card">
+          <div class="avatar-placeholder">
+            <img src="images/perfilFinal.png" alt="Lucas Anderson" class="avatar-img">
+          </div>
+          <div class="avatar-info">
+            <span class="avatar-name"></span>
+            <span class="avatar-role"></span>
+          </div>
+        </div>
+
+        <!-- Floating tech badges -->
+        <div class="float-badge badge-laravel">
+          <i class="fab fa-laravel"></i> Laravel
+        </div>
+        <div class="float-badge badge-angular">
+          <i class="fab fa-angular"></i> Angular
+        </div>
+        <div class="float-badge badge-ai">
+          <i class="fas fa-brain"></i> AI
+        </div>
+        <div class="float-badge badge-php">
+          <i class="fab fa-node-js"></i> NodeJS
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span>scroll</span>
+  </div>
+</section>
