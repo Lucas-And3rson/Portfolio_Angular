@@ -14,7 +14,7 @@
           <!-- Media Preview Section -->
           <div class="project-media">
             @if (project.mediaItems && project.mediaItems.length > 0) {
-              @if (project.mediaItems[0]?.type === 'video') {
+              @if (project.mediaItems[0].type === 'video') {
                 <iframe 
                   class="project-video"
                   [src]="getSafeMediaSrc(project.mediaItems[0].src)"
@@ -96,7 +96,7 @@
 
       <div class="modal-content">
         <!-- Media Carousel -->
-        <div class="modal-media-carousel">
+        <div class="modal-media-carousel" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd()">
           @if (selectedProject()?.mediaItems && selectedProject()!.mediaItems!.length > 0) {
             @for (media of selectedProject()?.mediaItems; track media.src; let idx = $index) {
               <div class="carousel-item" [class.active]="currentSlide() === idx">

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, Renderer2, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
@@ -30,9 +30,68 @@ export class ProjectsComponent {
   selectedProject = signal<Project | null>(null);
   currentSlide = signal(0);
 
-  constructor(private sanitizer: DomSanitizer) {
-    console.log('ProjectsComponent initialized');
-    console.log('Projects data:', this.projects);
+  private touchStartX = 0;
+  private touchEndX = 0;
+
+  constructor(private sanitizer: DomSanitizer, private renderer: Renderer2, private el: ElementRef) {}
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.adjustModalScroll();
+  }
+
+  openModal(project: Project) {
+    this.selectedProject.set(project);
+    this.currentSlide.set(0);
+    this.showModal.set(true);
+    this.renderer.addClass(document.body, 'no-scroll');
+    this.adjustModalScroll();
+  }
+
+  closeModal() {
+    this.showModal.set(false);
+    this.selectedProject.set(null);
+    this.renderer.removeClass(document.body, 'no-scroll');
+  }
+
+  private adjustModalScroll() {
+    if (this.showModal() && this.selectedProject()) {
+      // Allow modal content to scroll if it overflows
+      setTimeout(() => {
+        const modalContent = this.el.nativeElement.querySelector('.modal-details');
+        if (modalContent) {
+          if (modalContent.scrollHeight > modalContent.clientHeight) {
+            this.renderer.setStyle(modalContent, 'overflow-y', 'auto');
+          } else {
+            this.renderer.setStyle(modalContent, 'overflow-y', 'hidden');
+          }
+        }
+      }, 0);
+    }
+  }
+
+  onTouchStart(event: TouchEvent) {
+    this.touchStartX = event.touches[0].clientX;
+  }
+
+  onTouchMove(event: TouchEvent) {
+    this.touchEndX = event.touches[0].clientX;
+  }
+
+  onTouchEnd() {
+    if (this.selectedProject()?.mediaItems && (this.selectedProject()?.mediaItems?.length ?? 0) > 1) {
+      const diff = this.touchEndX - this.touchStartX;
+      if (Math.abs(diff) > 50) { // Threshold for swipe
+        if (diff < 0) {
+          this.nextSlide();
+        } else {
+          this.prevSlide();
+        }
+      }
+    }
+    // Reset values
+    this.touchStartX = 0;
+    this.touchEndX = 0;
   }
 
   projects: Project[] = [
@@ -51,7 +110,6 @@ export class ProjectsComponent {
         { type: 'image', src: 'images/capasProjetos/hospital/image 2.webp' },
         { type: 'image', src: 'images/capasProjetos/hospital/image 3.webp' },
         { type: 'image', src: 'images/capasProjetos/hospital/image 4.webp' },
-        // { type: 'video', src: 'https://www.youtube.com/embed/IDVIDEO?autoplay=1&mute=1&loop=1&controls=0&playlist=IDVIDEO' }, // Substituir com o ID real do vídeo
       ],
       features: [
         'Triagem médica e gestão de pacientes',
@@ -133,29 +191,14 @@ export class ProjectsComponent {
     },
   ];
 
-  toggleProject(index: number) {
-    this.activeProject.update(v => v === index ? null : index);
-  }
-
-  openModal(project: Project) {
-    this.selectedProject.set(project);
-    this.currentSlide.set(0);
-    this.showModal.set(true);
-  }
-
-  closeModal() {
-    this.showModal.set(false);
-    this.selectedProject.set(null);
-  }
-
   nextSlide() {
-    if (this.selectedProject() && this.selectedProject()!.mediaItems) {
+    if (this.selectedProject()?.mediaItems) {
       this.currentSlide.update(current => (current + 1) % this.selectedProject()!.mediaItems!.length);
     }
   }
 
   prevSlide() {
-    if (this.selectedProject() && this.selectedProject()!.mediaItems) {
+    if (this.selectedProject()?.mediaItems) {
       this.currentSlide.update(current => (current - 1 + this.selectedProject()!.mediaItems!.length) % this.selectedProject()!.mediaItems!.length);
     }
   }
