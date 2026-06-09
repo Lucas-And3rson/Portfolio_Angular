@@ -1,7 +1,7 @@
 # Node.js dependencies
 /node_modules/
 
-# Build output
+# Build output | teste deploy
 /dist/
 /tmp/
 /out-tsc/
