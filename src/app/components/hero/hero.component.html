@@ -65,32 +65,53 @@
 
     <!-- Right: avatar card -->
     <div class="hero-visual">
-      <div class="avatar-container">
+      <div class="avatar-container" [class.paused]="selectedBadge()">
         <div class="avatar-ring ring-1"></div>
         <div class="avatar-ring ring-2"></div>
+        
         <div class="avatar-card">
           <div class="avatar-placeholder">
-            <img src="images/perfilFinal.png" alt="Lucas Anderson" class="avatar-img">
+            <picture style="width: 100%; height: 100%; display: flex;">
+              <source srcset="images/perfilFinal.webp" type="image/webp">
+              <img src="images/perfilFinal.webp" 
+                  alt="Lucas Anderson" 
+                  class="avatar-img"
+                  width="210"
+                  height="210"
+                  loading="eager">
+            </picture>
           </div>
           <div class="avatar-info">
             <span class="avatar-name"></span>
             <span class="avatar-role"></span>
           </div>
+
+          @if (selectedBadge(); as badge) {
+            <div class="mini-card-overlay">
+              <div class="mini-card">
+                <button class="close-card" (click)="closeBadge($event)">&times;</button>
+                <i [class]="badge.icon"></i>
+                <h4>{{ badge.name }}</h4>
+                <p>Tempo de Experiência:</p>
+                <span class="exp-time">{{ badge.experience }}</span>
+              </div>
+            </div>
+          }
         </div>
 
-        <!-- Floating tech badges -->
-        <div class="float-badge badge-laravel">
-          <i class="fab fa-laravel"></i> Laravel
+        <div class="tech-orbit-space" [style.--total]="techBadges.length">
+          @for (badge of techBadges; track badge.name; let idx = $index) {
+            <div class="float-badge" 
+                 [class]="badge.class"
+                 [class.active]="selectedBadge()?.name === badge.name"
+                 [style.--idx]="idx"
+                 (click)="selectBadge(badge, $event)">
+              <i [class]="badge.icon"></i> 
+              <span>{{ badge.name }}</span>
+            </div>
+          }
         </div>
-        <div class="float-badge badge-angular">
-          <i class="fab fa-angular"></i> Angular
-        </div>
-        <div class="float-badge badge-ai">
-          <i class="fas fa-brain"></i> AI
-        </div>
-        <div class="float-badge badge-php">
-          <i class="fab fa-node-js"></i> NodeJS
-        </div>
+
       </div>
     </div>
   </div>

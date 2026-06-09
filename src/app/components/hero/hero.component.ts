@@ -1,6 +1,13 @@
 import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+interface TechBadge {
+  name: string;
+  icon: string;
+  class: string;
+  experience: string;
+}
+
 @Component({
   selector: 'app-hero',
   standalone: true,
@@ -10,6 +17,18 @@ import { CommonModule } from '@angular/common';
 })
 export class HeroComponent implements OnInit, OnDestroy {
   displayText = signal('');
+  
+  // Gerencia qual stack está selecionada no momento
+  selectedBadge = signal<TechBadge | null>(null);
+
+  // Array unificado com dados de visualização e metadados de experiência
+  techBadges: TechBadge[] = [
+    { name: 'Laravel', icon: 'fab fa-laravel', class: 'badge-laravel', experience: '3 Anos' },
+    { name: 'Angular', icon: 'fab fa-angular', class: 'badge-angular', experience: '2 Anos' },
+    { name: 'IA', icon: 'fas fa-brain', class: 'badge-ai', experience: '1 Ano' },
+    { name: 'PHP', icon: 'fab fa-php', class: 'badge-php', experience: '4 Anos' }
+  ];
+
   private phrases = [
     'Full Stack Developer',
     'Laravel & Angular Expert',
@@ -28,6 +47,18 @@ export class HeroComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.typingTimer) clearTimeout(this.typingTimer);
+  }
+
+  // Seleciona um badge e impede o clique de propagar para o fundo
+  selectBadge(badge: TechBadge, event: Event) {
+    event.stopPropagation();
+    this.selectedBadge.set(badge);
+  }
+
+  // Fecha o mini card de experiência
+  closeBadge(event: Event) {
+    event.stopPropagation();
+    this.selectedBadge.set(null);
   }
 
   private type() {

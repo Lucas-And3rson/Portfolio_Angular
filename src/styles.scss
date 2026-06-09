@@ -45,6 +45,12 @@ body {
   overflow-x: hidden;
 }
 
+/* ── Global Scroll Lock ───────────────────────────────── */
+body.no-scroll {
+  overflow: hidden !important;
+  height: 100vh;
+}
+
 /* ── Scrollbar ──────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }

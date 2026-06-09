@@ -82,6 +82,10 @@
   &.badge-yellow { background: rgba(234,179,8,0.2); color: #facc15; }
 }
 
+.status-badge i {
+  font-size: 1.2rem;
+}
+
 /* ── Media Overlay (Desktop Only) ─────────────────────── */
 .media-overlay {
   position: absolute;
