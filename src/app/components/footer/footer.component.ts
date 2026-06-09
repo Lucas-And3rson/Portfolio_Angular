@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
         <span class="footer-copy">© {{ year }} — Full Stack Developer. Feito com Angular.</span>
         <div class="footer-links">
                 <a 
-                  [href]=""
+                  href="https://github.com/Lucas-And3rson/Portfolio_Angular"
                   target="_blank"
                   rel="noopener noreferrer">
                   <i class="fab fa-github"></i>
