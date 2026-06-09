@@ -42,7 +42,7 @@
               {{ project.badge }}
             </div>
 
-            <!-- Action Buttons Overlay -->
+            <!-- Action Buttons Overlay (Desktop Only) -->
             <div class="media-overlay">
               <button class="btn-action btn-preview" (click)="openModal(project)">
                 <i class="fas fa-eye"></i>
@@ -55,7 +55,7 @@
                   rel="noopener noreferrer"
                   class="btn-action btn-live">
                   <i class="fas fa-external-link-alt"></i>
-                  <span>Projeto I</span>
+                  <span>Projeto</span>
                 </a>
               }
               @if (project.github) {
@@ -73,11 +73,46 @@
 
           <!-- Project Info Section (Summary) -->
           <div class="project-info-summary">
-            <h3 class="project-title">{{ project.title }}</h3>
-            <p class="project-subtitle">{{ project.subtitle }}</p>
+            <div class="project-header">
+              <h3 class="project-title">{{ project.title }}</h3>
+              <p class="project-subtitle">{{ project.subtitle }}</p>
+            </div>
+
+            <!-- Tech Tags -->
             <div class="tech-tags-summary">
-              @for (tag of project.tags; track tag) {
+              @for (tag of project.tags.slice(0, 5); track tag) {
                 <span class="tech-tag">{{ tag }}</span>
+              }
+              @if (project.tags.length > 5) {
+                <span class="tech-tag tech-tag-more">+{{ project.tags.length - 5 }}</span>
+              }
+            </div>
+
+            <!-- Action Buttons (Mobile Only) -->
+            <div class="mobile-actions">
+              <button class="btn-mobile btn-preview" (click)="openModal(project)">
+                <i class="fas fa-eye"></i>
+                Ver Detalhes
+              </button>
+              @if (project.liveLink) {
+                <a 
+                  [href]="project.liveLink"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-mobile btn-live">
+                  <i class="fas fa-external-link-alt"></i>
+                  Projeto
+                </a>
+              }
+              @if (project.github) {
+                <a 
+                  [href]="project.github"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-mobile btn-github">
+                  <i class="fab fa-github"></i>
+                  Código
+                </a>
               }
             </div>
           </div>
@@ -104,7 +139,7 @@
                   <iframe 
                     class="carousel-video"
                     [src]="getSafeMediaSrc(media.src)"
-                    title="{{ selectedProject()!.title }}"
+                    title="{{ selectedProject()?.title }}"
                     frameborder="0"
                     allow="autoplay; muted"
                     allowfullscreen>
