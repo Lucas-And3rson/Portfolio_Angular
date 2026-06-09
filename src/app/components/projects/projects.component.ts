@@ -104,7 +104,6 @@ export class ProjectsComponent {
       icon: 'fas fa-hospital',
       color: 'cyan',
       tags: ['Laravel', 'PHP', 'Angular', 'MySQL', 'SSE', 'Chart.js', 'REST API', '2FA', 'Groq AI'],
-      liveLink: 'https://hospital.carrandsu.shop',
       mediaItems: [
         { type: 'image', src: 'images/capasProjetos/hospital/image 1.webp' },
         { type: 'image', src: 'images/capasProjetos/hospital/image 2.webp' },

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 interface TechBadge {
@@ -21,6 +21,27 @@ export class HeroComponent implements OnInit, OnDestroy {
   // Gerencia qual stack está selecionada no momento
   selectedBadge = signal<TechBadge | null>(null);
 
+  constructor(private elementRef: ElementRef) {}
+
+  // 3. O SEGREDO DO CLICK OUTSIDE GLOBAL:
+  // Esse listener escuta TODOS os cliques na página inteira (document:click).
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    // Se nenhum badge estiver selecionado, não precisamos fazer nada
+    if (!this.selectedBadge()) return;
+
+    const target = event.target as HTMLElement;
+
+    // Buscamos se o elemento clicado está dentro da div '.mini-card' ou é um '.float-badge'
+    const clickedInsideCard = target.closest('.mini-card');
+    const clickedABadge = target.closest('.float-badge');
+
+    // Se o usuário clicou FORA do mini-card E não clicou em um badge (para não fechar no exato momento que abre), fechamos o card!
+    if (!clickedInsideCard && !clickedABadge) {
+      this.selectedBadge.set(null);
+    }
+  }
+  
   // Array unificado com dados de visualização e metadados de experiência
   techBadges: TechBadge[] = [
     { name: 'Laravel', icon: 'fab fa-laravel', class: 'badge-laravel', experience: '3 Anos' },
