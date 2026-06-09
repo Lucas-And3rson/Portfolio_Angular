@@ -32,4 +32,4 @@ jobs:
           password: ${{ secrets.HOSTINGER_PASSWORD }}
           port: ${{ secrets.HOSTINGER_PORT }}
           local-dir: ./dist/portfolio-lucas-anderson/browser/
-          server-dir: ./public_html/
+          server-dir: ./
