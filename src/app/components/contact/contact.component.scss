@@ -90,6 +90,15 @@
   }
 }
 
+.contact-link.info-only {
+  cursor: default;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.02);
+    transform: none;
+  }
+}
+
 /* ── Form ────────────────────────────── */
 .form-card {
   padding: 36px;
@@ -131,12 +140,33 @@
   }
 }
 
+/* Estilização da tag opcional no label */
+.form-group label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .optional-tag {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+}
+
 .submit-btn {
   width: 100%;
   justify-content: center;
   padding: 16px;
   font-size: 1rem;
   margin-top: 4px;
+}
+
+/* Feedback visual de botão desabilitado no envio */
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .success-msg, .error-msg {

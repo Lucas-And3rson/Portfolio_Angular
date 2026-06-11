@@ -3,39 +3,53 @@
     <div class="section-header">
       <span class="section-tag">// contato</span>
       <h2>Vamos conversar</h2>
-      <p>Aberto a projetos freelance, contratos PJ e oportunidades CLT.</p>
+      <p>Aberto a projetos freelance, contratos PJ e CLT.</p>
     </div>
 
     <div class="contact-grid">
-      <!-- Left: links -->
       <div class="contact-info">
         <h3>Entre em contato</h3>
         <p>Prefiro projetos com desafio técnico real. Se você tem um sistema para construir, me chama.</p>
 
         <div class="contact-links">
           @for (link of links; track link.label) {
-            <a [href]="link.href" target="_blank" class="contact-link glass-card"
-               [class]="'border-' + link.color">
-              <div class="link-icon" [class]="'icon-' + link.color">
-                <i [class]="link.icon"></i>
+            
+            @if (link.disabled) {
+              <div class="contact-link glass-card info-only" [class]="'border-' + link.color">
+                <div class="link-icon" [class]="'icon-' + link.color">
+                  <i [class]="link.icon"></i>
+                </div>
+                <div class="link-text">
+                  <span class="link-label">{{ link.label }}</span>
+                  <span class="link-value">{{ link.value }}</span>
+                </div>
               </div>
-              <div class="link-text">
-                <span class="link-label">{{ link.label }}</span>
-                <span class="link-value">{{ link.value }}</span>
-              </div>
-              <i class="fas fa-external-link-alt link-arrow"></i>
-            </a>
+            } 
+            
+            @else {
+              <a [href]="link.href" target="_blank" class="contact-link glass-card"
+                 [class]="'border-' + link.color">
+                <div class="link-icon" [class]="'icon-' + link.color">
+                  <i [class]="link.icon"></i>
+                </div>
+                <div class="link-text">
+                  <span class="link-label">{{ link.label }}</span>
+                  <span class="link-value">{{ link.value }}</span>
+                </div>
+                <i class="fas fa-external-link-alt link-arrow"></i>
+              </a>
+            }
+
           }
         </div>
       </div>
 
-      <!-- Right: form -->
       <div class="contact-form-wrapper">
         <div class="form-card glass-card">
           @if (submitted()) {
             <div class="success-msg">
               <i class="fas fa-check-circle"></i>
-              <span>Mensagem enviada! Em breve entrarei em contato.</span>
+              <span>Mensagem enviada com sucesso direto para o meu e-mail! Responderei em breve.</span>
             </div>
           }
 
@@ -47,25 +61,35 @@
           }
 
           <div class="form-group">
-            <label for="name">Nome</label>
+            <label for="name">Nome *</label>
             <input id="name" type="text" [(ngModel)]="form.name"
-                   placeholder="Seu nome completo" autocomplete="off">
+                   placeholder="Seu nome completo" autocomplete="off" [disabled]="isSubmitting()">
           </div>
 
           <div class="form-group">
-            <label for="email">Email</label>
+            <label for="email">Email *</label>
             <input id="email" type="email" [(ngModel)]="form.email"
-                   placeholder="seu@email.com" autocomplete="off">
+                   placeholder="seu@email.com" autocomplete="off" [disabled]="isSubmitting()">
           </div>
 
           <div class="form-group">
-            <label for="message">Mensagem</label>
-            <textarea id="message" [(ngModel)]="form.message" rows="5"
-                      placeholder="Descreva seu projeto ou proposta..."></textarea>
+            <label for="phone">WhatsApp / Telefone <span class="optional-tag">(Opcional)</span></label>
+            <input id="phone" type="tel" [(ngModel)]="form.phone"
+                   placeholder="(87) 9 9999-9999" autocomplete="off" [disabled]="isSubmitting()">
           </div>
 
-          <button class="btn-primary submit-btn" (click)="submit()">
-            <i class="fas fa-paper-plane"></i> Enviar Mensagem
+          <div class="form-group">
+            <label for="message">Mensagem *</label>
+            <textarea id="message" [(ngModel)]="form.message" rows="4"
+                      placeholder="Descreva seu projeto ou proposta..." [disabled]="isSubmitting()"></textarea>
+          </div>
+
+          <button class="btn-primary submit-btn" (click)="submit()" [disabled]="isSubmitting()">
+            @if (isSubmitting()) {
+              <i class="fas fa-spinner fa-spin"></i> Enviando...
+            } @else {
+              <i class="fas fa-paper-plane"></i> Enviar Mensagem
+            }
           </button>
         </div>
       </div>
