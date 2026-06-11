@@ -177,24 +177,33 @@
 .validate-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  background: rgba(6, 182, 212, 0.06);
-  border: 1px solid rgba(6, 182, 212, 0.2);
-  border-radius: 20px;
+  justify-content: center;
+  width: 32px; /* Transforma o botão em um círculo perfeito */
+  height: 32px;
+  padding: 0;
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-radius: 50%; /* Borda totalmente redonda */
   color: var(--accent-cyan);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   backdrop-filter: blur(4px);
-  white-space: nowrap;
+  flex-shrink: 0; /* Impede o botão de esmagar em telas muito pequenas */
+
+  i {
+    font-size: 0.9rem; /* Ícone sutilmente maior para compensar a falta de texto */
+    transition: var(--transition);
+  }
 
   &:hover {
-    background: rgba(6, 182, 212, 0.15);
+    background: rgba(6, 182, 212, 0.2);
     border-color: var(--accent-cyan);
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -267,19 +276,21 @@
   }
 
   .testimonial-author {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-  
-  .validate-btn {
-    width: 100%; /* Botão expande no mobile para facilitar o clique com o polegar */
-    justify-content: center;
-    padding: 8px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap; /* Impede a quebra de linha */
+    gap: 12px;
   }
   
   .author-left {
-    width: 100%;
+    width: auto;
+    flex: 1;
+    min-width: 0; /* Permite que o texto trunque se o nome do autor for gigante */
+  }
+
+  .author-info strong {
+    font-size: 0.88rem; /* Ajuste sutil para telas pequenas */
   }
 
   /* RESOLUÇÃO DO SEU PROBLEMA: O slider-controls agora fica encostado no card automaticamente */

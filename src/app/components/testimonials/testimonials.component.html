@@ -43,9 +43,10 @@
               </div>
               
               @if (t.validationLink) {
-                <button class="validate-btn" (click)="goToValidationLink(t.name, t.validationLink, $event)">
+                <button class="validate-btn" 
+                        [attr.title]="'Validar recomendação de ' + t.name"
+                        (click)="goToValidationLink(t.name, t.validationLink, $event)">
                   <i class="fas fa-check-circle"></i>
-                  Validar
                 </button>
               }
             </div>
