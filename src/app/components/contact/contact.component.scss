@@ -190,6 +190,46 @@
   color: #f87171;
 }
 
+/* Estrutura para colocar a label e o aviso lado a lado alinhados */
+.label-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+
+  label {
+    margin-bottom: 0 !important; /* Reseta a margem antiga para alinhar perfeitamente */
+  }
+}
+
+/* 🛡️ Estilização do Alerta de Segurança */
+.security-warning {
+  font-size: 0.72rem;
+  color: #ef4444; /* Vermelho moderno/alerta sutil */
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  animation: alertFadeIn 0.25s ease-out forwards;
+  font-family: var(--font-mono, monospace);
+
+  i {
+    font-size: 0.75rem;
+  }
+}
+
+/* Animação suave de entrada do aviso */
+@keyframes alertFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ── Responsive ──────────────────────── */
 @media (max-width: 900px) {
   .contact-grid { grid-template-columns: 1fr; gap: 48px; }
