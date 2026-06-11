@@ -10,6 +10,8 @@ import { CommonModule } from '@angular/common';
 })
 export class TestimonialsComponent {
   current = signal(0);
+  // Mantém o estado de expansão de cada card individualmente por índice
+  expandedCards = signal<{ [key: number]: boolean }>({});
 
   testimonials = [
     {
@@ -42,28 +44,41 @@ export class TestimonialsComponent {
   ];
 
   prev() {
+    this.collapseAll();
     this.current.update(v => (v - 1 + this.testimonials.length) % this.testimonials.length);
   }
 
   next() {
+    this.collapseAll();
     this.current.update(v => (v + 1) % this.testimonials.length);
   }
 
   goTo(i: number) {
+    this.collapseAll();
     this.current.set(i);
   }
 
-  starsArray(n: number) {
-    return Array(n).fill(0);
+  toggleExpand(index: number, event: Event) {
+    event.stopPropagation();
+    this.expandedCards.update(states => ({
+      ...states,
+      [index]: !states[index]
+    }));
   }
 
-  // Método para validar recomendação
-  goToValidationLink(name: string, link: string) {
+  isExpanded(index: number): boolean {
+    return !!this.expandedCards()[index];
+  }
+
+  private collapseAll() {
+    this.expandedCards.set({});
+  }
+
+  goToValidationLink(name: string, link: string, event: Event) {
+    event.stopPropagation(); // Previne qualquer efeito colateral de clique no card
     if (link) {
-      window.open(link, '_blank'); // Abre em nova aba
-      // window.location.href = link; // Abre na mesma aba
+      window.open(link, '_blank');
       console.log(`Validando comentário de: ${name}`);
     }
   }
- 
 }

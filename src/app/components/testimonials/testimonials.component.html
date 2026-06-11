@@ -11,11 +11,25 @@
         @for (t of testimonials; track t.name; let i = $index) {
           <div class="testimonial-card glass-card" [class.active]="current() === i"
                [class.prev]="(current() - 1 + testimonials.length) % testimonials.length === i"
-               [class.next]="(current() + 1) % testimonials.length === i">
+               [class.next]="(current() + 1) % testimonials.length === i"
+               [class.card-expanded]="isExpanded(i)">
 
             <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
 
-            <p class="testimonial-text">{{ t.text }}</p>
+            <div class="testimonial-text-container" 
+                 [class.has-gradient]="(textEl.scrollHeight > textEl.clientHeight) && !isExpanded(i)">
+              
+              <p #textEl class="testimonial-text" [class.expanded]="isExpanded(i)">
+                {{ t.text }}
+              </p>
+              
+              @if (textEl.scrollHeight > textEl.clientHeight || isExpanded(i)) {
+                <button class="toggle-text-btn" (click)="toggleExpand(i, $event)">
+                  {{ isExpanded(i) ? 'Ler menos' : 'Ler mais' }}
+                  <i class="fas" [class.fa-chevron-down]="!isExpanded(i)" [class.fa-chevron-up]="isExpanded(i)"></i>
+                </button>
+              }
+            </div>
 
             <div class="testimonial-author">
               <div class="author-left">
@@ -28,27 +42,33 @@
                 </div>
               </div>
               
-              <button class="validate-btn" (click)="goToValidationLink(t.name, t.validationLink)">
-                <i class="fas fa-check-circle"></i>
-                Validar
-              </button>
+              @if (t.validationLink) {
+                <button class="validate-btn" (click)="goToValidationLink(t.name, t.validationLink, $event)">
+                  <i class="fas fa-check-circle"></i>
+                  Validar
+                </button>
+              }
             </div>
           </div>
         }
       </div>
 
       <div class="slider-controls">
-        <button class="ctrl-btn" (click)="prev()">
+        <button class="ctrl-btn" (click)="prev()" [attr.aria-label]="'Depoimento anterior'">
           <i class="fas fa-chevron-left"></i>
         </button>
 
         <div class="dots">
           @for (t of testimonials; track t.name; let i = $index) {
-            <button class="dot" [class.active]="current() === i" (click)="goTo(i)"></button>
+            <button class="dot" 
+                    [class.active]="current() === i" 
+                    (click)="goTo(i)" 
+                    [attr.aria-label]="'Ir para depoimento ' + (i + 1)">
+            </button>
           }
         </div>
 
-        <button class="ctrl-btn" (click)="next()">
+        <button class="ctrl-btn" (click)="next()" [attr.aria-label]="'Próximo depoimento'">
           <i class="fas fa-chevron-right"></i>
         </button>
       </div>
